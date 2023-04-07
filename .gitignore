@@ -1,0 +1,6 @@
+# dotenv
+.env
+
+.idea
+
+__pycache__
