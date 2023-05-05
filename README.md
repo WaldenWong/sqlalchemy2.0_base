@@ -253,9 +253,9 @@ if __name__ == '__main__':
 
 ## 数据基类设计
 
-> 基类需要完成如下可被调用的操作，创建连接、创建事务、创建所有表结构、能够使用sqlalchemy中core或orm方式执行sql或操作数据库对象、释放数据库连接
+> 基类需要完成如下可被调用的操作，创建连接、创建事务、创建所有表结构、能够使用sqlalchemy中row或orm方式执行sql或操作数据库对象、释放数据库连接
 >
-> 操作数据库**orm比core操作要快**，100个并发更新操作orm比core快0.05-0.1左右的时间戳，创建操作orm比core快0.03-0.05左右的时间戳
+> 操作数据库**orm比row操作要快**，100个并发更新操作orm比row快0.05-0.1左右的时间戳，创建操作orm比row快0.03-0.05左右的时间戳
 
 ~~~python
 class Operate(str, Enum):
@@ -365,21 +365,21 @@ class AsyncDatabase:
                 raise exc
         return res
 
-    async def execute(self, q): # core执行
+    async def execute(self, q): # row执行
         res = await self._apply(Operate.EXECUTE, q)
         return res
 
-    async def scalars(self, q): # core执行
+    async def scalars(self, q): # row执行
         res = await self._apply(Operate.SCALARS, q)
         return res
 
-    async def scalar(self, q): # core执行
+    async def scalar(self, q): # row执行
         res = await self._apply(Operate.SCALAR, q)
         return res
 
     async def add(self, m): # orm执行
         # 这里只对update数据时使用，因为在事务中使用orm添加数据，无法获取到数据对象插入数据库后的信息，必须事务结束后才能获取到。但是更新操作不会。
-        # orm和core操作数据库，底层日志都是一样的
+        # orm和row操作数据库，底层日志都是一样的
         res = await self._apply(Operate.ADD, m)
         return res
 
